@@ -1,0 +1,34 @@
+name: Program Forditasa
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+      - name: Kód letöltése
+        uses: actions/checkout@v4
+
+      - name: Python telepitése
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: PyInstaller telepitése
+        run: |
+          pip install pyinstaller
+
+      - name: Forditás futtatása
+        run: |
+          ls -la
+          pyinstaller --onefile --noconsole --icon=parancsikon.ico --name=konvertalodownloader ./konvertalodownloader.py
+
+      - name: Elkészült fájl mentése (Artefaktumként)
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-${{ matrix.os }}
+          path: dist/
